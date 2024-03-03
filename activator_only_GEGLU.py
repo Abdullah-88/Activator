@@ -5,20 +5,6 @@ from torch import nn
 
 
 
-"""class FeedForward(nn.Module):
-    def __init__(self, dim, hidden_dim, dropout):
-        super().__init__()
-        self.net = nn.Sequential(
-            nn.Linear(dim, hidden_dim),
-            nn.GELU(),
-            nn.Dropout(dropout),
-            nn.Linear(hidden_dim, dim),
-            nn.Dropout(dropout)
-        )
-    def forward(self, x):
-        return self.net(x)"""
-
-
    
 
 
@@ -60,10 +46,7 @@ class ActivatorBlock(nn.Module):
         x = self.norm(x)
         x = self.actgu(x)           
         x = x + residual      
-        #residual = x
-        #x = self.norm(x)
-        #x = self.ffn(x)        
-        #out = x + residual
+        
         out = x
         return out
 
