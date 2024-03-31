@@ -1,5 +1,5 @@
 # Activator
 
-GLU Activations are All You Need
+GLU Activations as the core functions of a Transformer 
 
 Paper Coming Soon
