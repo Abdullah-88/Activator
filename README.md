@@ -1,6 +1,6 @@
 # Activator
 
-GLU Activations as The Core Functions of a Vision Transformer 
+Activator: GLU Activation Function as the Core Component of a Vision Transformer
 
 Abdullah Nazhat Abdullah, Tarkan Aydin
 
