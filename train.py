@@ -12,8 +12,7 @@ from activator import ACTIVATOR
 # data transforms
 
 transform = Compose([
-RandomCrop(32, padding=4),
-RandomHorizontalFlip(), 
+ 
 ToTensor(),
 Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
 
