@@ -1,15 +1,13 @@
-#imports
-
 import os
 import csv
 import torch
 from torch import nn 
 from torch.utils.data import DataLoader 
 from torchvision import datasets 
-from torchvision.transforms import ToTensor, Normalize, RandomCrop, RandomHorizontalFlip, Compose 
+from torchvision.transforms import ToTensor, Normalize, Compose 
 from activator import ACTIVATOR	
 
-# data transforms
+
 
 transform = Compose([
  
@@ -31,7 +29,7 @@ test_data = datasets.CIFAR10(
                                        download=True,
                                        transform=transform 
                                        )                                       
-# create dataloaders  
+
                                      
 batch_size = 128
 
@@ -44,22 +42,12 @@ for X, y in test_dataloader:
     print(f"Shape of y:{y.shape}{y.dtype}")
     break
 
-# size checking for loading images
-def check_sizes(image_size, patch_size):
-    sqrt_num_patches, remainder = divmod(image_size, patch_size)
-    assert remainder == 0, "`image_size` must be divisibe by `patch_size`"
-    num_patches = sqrt_num_patches ** 2
-    return num_patches
 
-
-
-# create model
-# Get cpu or gpu device for training.
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 print(f"using {device} device") 
 
-# model definition
+
 
 class ACTIVATORImageClassification(ACTIVATOR):
     def __init__(
@@ -73,7 +61,6 @@ class ACTIVATORImageClassification(ACTIVATOR):
         num_layers=4,
         dropout=0.5
     ):
-        num_patches = check_sizes(image_size, patch_size)
         super().__init__(d_model, d_ffn, num_layers,dropout)
         self.patcher = nn.Conv2d(
             in_channels, d_model, kernel_size=patch_size, stride=patch_size
@@ -87,20 +74,20 @@ class ACTIVATORImageClassification(ACTIVATOR):
         patches = patches.permute(0, 2, 3, 1)
         patches = patches.view(batch_size, -1, num_channels)
         embedding = self.model(patches)
-        embedding = embedding.mean(dim=1) # global average pooling
+        embedding = embedding.mean(dim=1) 
         out = self.classifier(embedding)
         return out
 
 model = ACTIVATORImageClassification().to(device)
 print(model)
 
-# Optimizer
+
 
 loss_fn = nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(model.parameters(),lr=1e-3)
 
 
-# Training Loop
+
 
 def train(dataloader, model, loss_fn, optimizer):
     size = len(dataloader.dataset)
@@ -111,11 +98,11 @@ def train(dataloader, model, loss_fn, optimizer):
     for batch, (X,y) in enumerate(dataloader):
         X, y = X.to(device), y.to(device)
        
-        #compute prediction error
+       
         pred = model(X)
         loss = loss_fn(pred,y)
         
-        # backpropagation
+        
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
@@ -137,7 +124,7 @@ def train(dataloader, model, loss_fn, optimizer):
 
 
 
-# Test loop
+
 
 def test(dataloader, model, loss_fn):
     size = len(dataloader.dataset)            
@@ -159,7 +146,7 @@ def test(dataloader, model, loss_fn):
 
 
 
-# apply train and test
+
 
 logname = "/PATH/Activator/Experiments_cifar10/logs_activator/logs_cifar10.csv"
 if not os.path.exists(logname):
@@ -181,7 +168,6 @@ for epoch in range(epochs):
                             test_loss, test_acc])
 print("Done!")
 
-# saving trained model
 
 path = "/PATH/Activator/Experiments_cifar10/weights_activator"
 model_name = "ACTIVATORImageClassification_cifar10"
