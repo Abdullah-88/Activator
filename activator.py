@@ -4,7 +4,6 @@ from torch import nn
 
 
 
-
 class FeedForward(nn.Module):
     def __init__(self, dim, hidden_dim, dropout):
         super().__init__()
