@@ -25,29 +25,28 @@ class ActivatorGatingUnit(nn.Module):
         return out
 
 class ActivatorBlock(nn.Module):
-    def __init__(self, d_model, d_ffn, dropout):
+    def __init__(self, d_model, d_ffn):
         super().__init__()
        
         self.norm = nn.LayerNorm(d_model)       
         self.actgu = ActivatorGatingUnit(d_model, d_ffn)
-        #self.ffn = FeedForward(d_model, d_ffn, dropout)
+        
     def forward(self, x):
         residual = x
         x = self.norm(x)
         x = self.actgu(x)           
         x = x + residual      
-        
         out = x
         return out
 
 class ACTIVATOR(nn.Module):
-    def __init__(self, d_model, d_ffn, num_layers, dropout):
+    def __init__(self, d_model, d_ffn, num_layers):
         super().__init__()
         
         self.model = nn.Sequential(
-            *[ActivatorBlock(d_model, d_ffn, dropout) for _ in range(num_layers)]
+            *[ActivatorBlock(d_model, d_ffn) for _ in range(num_layers)]
         )
 
     def forward(self, x):
        
-        return self.model(x)
+        return self.model(x)        
