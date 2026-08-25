@@ -65,4 +65,4 @@ class ACTIVATOR(nn.Module):
 
     def forward(self, x):
        
-        return self.model(x)
+        return self.model(x)        
